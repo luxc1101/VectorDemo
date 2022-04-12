@@ -3,7 +3,8 @@
 #include <QCanBusDevice>
 #include <QMainWindow>
 #include <QLabel>
-#include <computefactorialthread.h>
+#include <worker.h>
+// #include <computefactorialthread.h>
 
 class connectDialog;
 QT_BEGIN_NAMESPACE
@@ -39,7 +40,11 @@ private:
     QCanBusDevice *m_canDeviceReceiver =  nullptr;
     QLabel *m_statusSender = nullptr;
     QLabel *m_statusReceiver = nullptr;
-    computefactorialthread* m_thread;
+/*******************************************************************/
+    QThread* m_thread;
+    worker* m_worker;
+    // computefactorialthread* m_thread;
+/*******************************************************************/
 
 
 

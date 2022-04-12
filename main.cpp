@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include <QApplication>
-#include <senderthread.h>
+// #include <senderthread.h>
 
 int main(int argc, char *argv[])
 {
@@ -8,7 +8,7 @@ int main(int argc, char *argv[])
     MainWindow w;
     w.show();
 
-    qDebug() << "Main thread started with" << QThread::currentThreadId() << ".";
+    // qDebug() << "Main thread started with" << QThread::currentThreadId() << ".";
 
     /*SenderThread* thread1 = new SenderThread();
     // SenderThread* thread2 = new SenderThread();

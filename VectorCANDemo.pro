@@ -30,14 +30,16 @@ SOURCES += \
         connectdialog.cpp \
         main.cpp \
         mainwindow.cpp \
-        senderthread.cpp
+        senderthread.cpp \
+        worker.cpp
 
 HEADERS += \
         bitratebox.h \
         computefactorialthread.h \
         connectdialog.h \
         mainwindow.h \
-        senderthread.h
+        senderthread.h \
+        worker.h
 
 FORMS += \
         connectdialog.ui \
