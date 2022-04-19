@@ -16,19 +16,28 @@ class connectDialog : public QDialog
 
 public:
     typedef QPair<QCanBusDevice::ConfigurationKey, QVariant> ConfigurationItem;
-    friend class MainWindow;
-    struct Settings
+    // friend class MainWindow;
+    struct ReceiverSettings
     {
         QString pluginName;
         QString deviceInterfaceName;
-        QList<ConfigurationItem> configurations;
+        QList<ConfigurationItem> rec_configurations;
         bool useConfigurationEnabled = false;
-        bool SenderBoxEnabled = false;
+        // bool SenderBoxEnabled = false;
         bool ReceiverBoxEnabled = false;
     };
+    struct SenderSettings
+    {
+        QString pluginName;
+        QString deviceInterfaceName;
+        QList<ConfigurationItem> sen_configurations;
+        bool useConfigurationEnabled = false;
+        bool SenderBoxEnabled = false;
+        // bool ReceiverBoxEnabled = false;
+    };
 
-    Settings sendersettings() const;
-    Settings receiversettings() const;
+    SenderSettings sendersettings() const;
+    ReceiverSettings receiversettings() const;
     explicit connectDialog(QWidget *parent = nullptr);
     ~connectDialog();
 
@@ -53,14 +62,12 @@ private slots:
 
     void on_configurationBox_clicked(bool checked);
 
-    void configBoxMappingToTextEdit(const QVariant &val);
-
 private:
     QString configurationValueSender(QCanBusDevice::ConfigurationKey key);
     QString configurationValueReceiver(QCanBusDevice::ConfigurationKey key);
     Ui::connectDialog *ui;
-    Settings m_currentSenderSettings;
-    Settings m_currentReceiverSettings;
+    SenderSettings m_currentSenderSettings;
+    ReceiverSettings m_currentReceiverSettings;
     QList<QCanBusDeviceInfo> m_interfaces;
     QString vectorplugin = "vectorcan";
     bool m_isSenderEnabled = false;
@@ -69,6 +76,7 @@ private:
     bool m_buttonBoxEnabled = false;
 
     void reverSettings();
+    void updateSettings();
 };
 
 #endif // CONNECTDIALOG_H

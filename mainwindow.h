@@ -4,9 +4,10 @@
 #include <QMainWindow>
 #include <QLabel>
 #include <worker.h>
+#include <receiverworker.h>
 // #include <computefactorialthread.h>
 
-class connectDialog;
+// class connectDialog;
 QT_BEGIN_NAMESPACE
 class QCanBusFrame;
 
@@ -24,25 +25,28 @@ public:
     ~MainWindow();
 
 private slots:
-    void connectDevice();
-    void processErrorsSender(QCanBusDevice::CanBusError) const;
+    // void connectDevice();
+    // void processErrorsSender(QCanBusDevice::CanBusError) const;
+    void ActionConnectable(bool value);
 /*******************************************************************/
     void computationStarted();
-    void computationFinished();
+    void computationFinished(int value);
     void progressUpdated(int item, int numberOfItems);
     void on_computeButtion_clicked();
 /*******************************************************************/
 private:
     Ui::MainWindow *ui = nullptr;
-    connectDialog *m_connectDialog = nullptr;
-    void initActionsConnections();
-    QCanBusDevice *m_canDeviceSender =  nullptr;
-    QCanBusDevice *m_canDeviceReceiver =  nullptr;
-    QLabel *m_statusSender = nullptr;
-    QLabel *m_statusReceiver = nullptr;
+    QThread* rec_thread;
+    ReceiverWorker* rec_worker;
+    // connectDialog *m_connectDialog = nullptr;
+    // void initActionsConnections();
+    // QCanBusDevice *m_canDeviceSender =  nullptr;
+    // QCanBusDevice *m_canDeviceReceiver =  nullptr;
+    // QLabel *m_statusSender = nullptr;
+    // QLabel *m_statusReceiver = nullptr;
 /*******************************************************************/
-    QThread* m_thread;
-    worker* m_worker;
+    // QThread* m_thread;
+    // worker* m_worker;
     // computefactorialthread* m_thread;
 /*******************************************************************/
 

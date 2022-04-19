@@ -30,6 +30,7 @@ SOURCES += \
         connectdialog.cpp \
         main.cpp \
         mainwindow.cpp \
+        receiverworker.cpp \
         senderthread.cpp \
         worker.cpp
 
@@ -38,6 +39,7 @@ HEADERS += \
         computefactorialthread.h \
         connectdialog.h \
         mainwindow.h \
+        receiverworker.h \
         senderthread.h \
         worker.h
 

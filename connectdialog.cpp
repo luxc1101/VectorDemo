@@ -30,6 +30,8 @@ connectDialog::connectDialog(QWidget *parent) :
     ui->canFdBox_2->addItem(tr("true"), QVariant(true));
 
     ui->buttonBox->setEnabled(m_buttonBoxEnabled);
+    ui->tabWidget_configBox->setTabEnabled(0, false);
+    ui->tabWidget_configBox->setTabEnabled(1, false);
 
     on_SenderBox_clicked(m_currentSenderSettings.SenderBoxEnabled);
     // connect(ui->SenderBox, &QGroupBox::clicked, this, &connectDialog::on_SenderBox_clicked);
@@ -37,19 +39,7 @@ connectDialog::connectDialog(QWidget *parent) :
     // connect(ui->interfaceListBox, &QComboBox::currentTextChanged, this, &connectDialog::on_interfaceListBox_currentTextChanged);
 
     on_ReceiverBox_clicked(m_currentReceiverSettings.ReceiverBoxEnabled);
-    // connect(ui->ReceiverBox, &QGroupBox::clicked, this, &connectDialog::on_ReceiverBox_clicked);
 
-    // connect(ui->configurationBox,&QGroupBox::clicked, this, &connectDialog::on_configurationBox_clicked);
-
-    //connect(ui->ReceiverBox, &QGroupBox::clicked,ui->pluginListBox_2, &QComboBox::setEnabled);
-    //connect(ui->pluginListBox_2, &QComboBox::currentTextChanged,this,&connectDialog::on_pluginListBox_2_currentTextChanged);
-
-    /*if (ui->pluginListBox_2->isEnabled()){
-        connect(ui->pluginListBox_2, &QComboBox::currentTextChanged,this,&connectDialog::on_pluginListBox_2_currentTextChanged);
-    }*/
-    // connect(ui->bitrateBox, &QComboBox::currentTextChanged, ui->textEdit_configurationBox, &QTextEdit::append);
-    // connect(ui->canFdBox, &QComboBox::currentTextChanged, ui->textEdit_configurationBox, &QTextEdit::append);
-    // ui->pluginListBox->addItems(QCanBus::instance()->plugins());
 }
 
 connectDialog::~connectDialog()
@@ -57,10 +47,10 @@ connectDialog::~connectDialog()
     delete ui;
 }
 
-connectDialog::Settings connectDialog::sendersettings() const{
+connectDialog::SenderSettings connectDialog::sendersettings() const{
     return m_currentSenderSettings;
 }
-connectDialog::Settings connectDialog::receiversettings() const{
+connectDialog::ReceiverSettings connectDialog::receiversettings() const{
     return m_currentReceiverSettings;
 }
 void connectDialog::buttionBoxStatus(){
@@ -112,6 +102,7 @@ void connectDialog::on_SenderBox_clicked(bool checked)
 {
     m_isSenderEnabled = checked;
     m_currentSenderSettings.SenderBoxEnabled = checked;
+    ui->tabWidget_configBox->setTabEnabled(0, checked);
     if (m_isSenderEnabled){
         ui->pluginListBox->addItem(vectorplugin);
     }else {
@@ -168,6 +159,7 @@ void connectDialog::on_ReceiverBox_clicked(bool checked)
 {
     m_isReceiverEnabled = checked;
     m_currentReceiverSettings.ReceiverBoxEnabled = checked;
+    ui->tabWidget_configBox->setTabEnabled(1, checked);
     if (m_isReceiverEnabled){
         ui->pluginListBox_2->addItem(vectorplugin);
     }else {
@@ -190,33 +182,7 @@ void connectDialog::on_ReceiverBox_clicked(bool checked)
  ************************************************************************/
 void connectDialog::on_buttonBox_accepted()
 {
-    on_configurationBox_clicked(m_configBoxEnabled);
-    if (m_configBoxEnabled && m_isSenderEnabled)
-    {
-        ui->textEdit_configurationBox->append(">>>>>>>>>Sender>>>>>>>>>");
-        ui->textEdit_configurationBox->append(tr("Sender %1").arg(m_currentSenderSettings.deviceInterfaceName));
-        ui->textEdit_configurationBox->append(tr("RAW Filter: %1").arg(ui->rawFilterEdit->text()));
-        ui->textEdit_configurationBox->append(tr("Error Filter: %1").arg(ui->errorFilterEdit->text()));
-        ui->textEdit_configurationBox->append(tr("LoopbackKey: %1").arg(ui->loopbackBox->currentText()));
-        ui->textEdit_configurationBox->append(tr("ReceiveOwnKey: %1").arg(ui->receiveOwnBox->currentText()));
-        ui->textEdit_configurationBox->append(tr("BitRateKey: %1").arg(ui->bitrateBox->currentText()));
-        ui->textEdit_configurationBox->append(tr("CanFdKey: %1").arg(ui->canFdBox->currentText()));
-        ui->textEdit_configurationBox->append(tr("DataBitRateKey: %1").arg(ui->dataBitrateBox->currentText()));
-        ui->textEdit_configurationBox->append("<<<<<<<<<<<<<<<<<<<<<<");
-    }
-    if (m_configBoxEnabled && m_isReceiverEnabled)
-    {
-        ui->textEdit_configurationBox->append(">>>>>>>>>Receiver>>>>>>>>");
-        ui->textEdit_configurationBox->append(tr("Receiver %1").arg(m_currentReceiverSettings.deviceInterfaceName));
-        ui->textEdit_configurationBox->append(tr("RAW Filter: %1").arg(ui->rawFilterEdit_2->text()));
-        ui->textEdit_configurationBox->append(tr("Error Filter: %1").arg(ui->errorFilterEdit_2->text()));
-        ui->textEdit_configurationBox->append(tr("LoopbackKey: %1").arg(ui->loopbackBox_2->currentText()));
-        ui->textEdit_configurationBox->append(tr("ReceiveOwnKey: %1").arg(ui->receiveOwnBox_2->currentText()));
-        ui->textEdit_configurationBox->append(tr("BitRateKey: %1").arg(ui->bitrateBox_2->currentText()));
-        ui->textEdit_configurationBox->append(tr("CanFdKey: %1").arg(ui->canFdBox->currentText()));
-        ui->textEdit_configurationBox->append(tr("DataBitRateKey: %1").arg(ui->dataBitrateBox_2->currentText()));
-        ui->textEdit_configurationBox->append("<<<<<<<<<<<<<<<<<<<<<<");
-    }
+    updateSettings();
     accept();
 
 }
@@ -232,13 +198,9 @@ void connectDialog::on_buttonBox_rejected()
  *          setup configuration box
  *
  ************************************************************************/
-void connectDialog::configBoxMappingToTextEdit(const QVariant &val){
-    ui->textEdit_configurationBox->append(tr("changed: %1").arg(val.toString()));
-}
-
 QString connectDialog::configurationValueSender(QCanBusDevice::ConfigurationKey key){
     QVariant result;
-    for (const ConfigurationItem &item : qAsConst(m_currentSenderSettings.configurations)){
+    for (const ConfigurationItem &item : qAsConst(m_currentSenderSettings.sen_configurations)){
         if (item.first == key){
             result = item.second;
             break;
@@ -252,7 +214,7 @@ QString connectDialog::configurationValueSender(QCanBusDevice::ConfigurationKey 
 
 QString connectDialog::configurationValueReceiver(QCanBusDevice::ConfigurationKey key){
     QVariant result;
-    for (const ConfigurationItem &item : qAsConst(m_currentReceiverSettings.configurations)){
+    for (const ConfigurationItem &item : qAsConst(m_currentReceiverSettings.rec_configurations)){
         if (item.first == key){
             result = item.second;
             break;
@@ -317,25 +279,19 @@ void connectDialog::reverSettings(){
     }
 }
 
-
-void connectDialog::on_configurationBox_clicked(bool checked)
-{
-    m_configBoxEnabled = checked;
-    buttionBoxStatus();
-    // Sender Config Setup
+void connectDialog::updateSettings(){
     if (m_configBoxEnabled && m_isSenderEnabled){
-        // QString ck = m_configBoxEnabled? "true" : "false";
+
         m_currentSenderSettings.pluginName = ui->pluginListBox->currentText();
         m_currentSenderSettings.deviceInterfaceName = ui->interfaceListBox->currentText();
-        m_currentSenderSettings.configurations.clear();
+        m_currentSenderSettings.sen_configurations.clear();
         m_currentSenderSettings.SenderBoxEnabled = ui->SenderBox->isChecked();
         m_currentSenderSettings.useConfigurationEnabled = ui->configurationBox->isChecked();
-        // process LoopBack
         if (ui->loopbackBox->currentIndex() != 0){
             ConfigurationItem item;
             item.first = QCanBusDevice::LoopbackKey;
             item.second = ui->loopbackBox->currentData();
-            m_currentSenderSettings.configurations.append(item);
+            m_currentSenderSettings.sen_configurations.append(item);
         }
 
         // prozess ReceivOwnKey
@@ -343,7 +299,7 @@ void connectDialog::on_configurationBox_clicked(bool checked)
             ConfigurationItem item;
             item.first = QCanBusDevice::ReceiveOwnKey;
             item.second = ui->receiveOwnBox->currentData();
-            m_currentSenderSettings.configurations.append(item);
+            m_currentSenderSettings.sen_configurations.append(item);
         }
 
         // prozess error filter
@@ -355,7 +311,7 @@ void connectDialog::on_configurationBox_clicked(bool checked)
                 ConfigurationItem item;
                 item.first = QCanBusDevice::ErrorFilterKey;
                 item.second = QVariant::fromValue(QCanBusFrame::FrameErrors(dec));
-                m_currentSenderSettings.configurations.append(item);
+                m_currentSenderSettings.sen_configurations.append(item);
             }
         }
 
@@ -365,37 +321,40 @@ void connectDialog::on_configurationBox_clicked(bool checked)
         }
 
         const int bitrate = ui->bitrateBox->bitRate();
+        qDebug() << "Sender birate: " << bitrate;
         if (bitrate > 0){
             const ConfigurationItem item(QCanBusDevice::BitRateKey, QVariant(bitrate));
-            m_currentSenderSettings.configurations.append(item);
+            m_currentSenderSettings.sen_configurations.append(item);
         }
 
         // process CAN FD setting
         ConfigurationItem fdItem;
         fdItem.first = QCanBusDevice::CanFdKey;
         fdItem.second = ui->canFdBox->currentData();
-        m_currentSenderSettings.configurations.append(fdItem);
+        m_currentSenderSettings.sen_configurations.append(fdItem);
 
         const int dataBitrate = ui->dataBitrateBox->bitRate();
         if (dataBitrate > 0){
             const ConfigurationItem item(QCanBusDevice::DataBitRateKey, QVariant(dataBitrate));
-            m_currentSenderSettings.configurations.append(item);
+            m_currentSenderSettings.sen_configurations.append(item);
         }
+
     }
 
-    // Receiver Config Setup
+
     if (m_configBoxEnabled && m_isReceiverEnabled){
         m_currentReceiverSettings.pluginName = ui->pluginListBox_2->currentText();
         m_currentReceiverSettings.deviceInterfaceName = ui->interfaceListBox_2->currentText();
-        m_currentReceiverSettings.configurations.clear();
+        m_currentReceiverSettings.rec_configurations.clear();
         m_currentReceiverSettings.ReceiverBoxEnabled = ui->ReceiverBox->isChecked();
         m_currentReceiverSettings.useConfigurationEnabled = ui->configurationBox->isChecked();
+
         // process LoopBack
         if (ui->loopbackBox_2->currentIndex() != 0){
             ConfigurationItem item;
             item.first = QCanBusDevice::LoopbackKey;
             item.second = ui->loopbackBox_2->currentData();
-            m_currentReceiverSettings.configurations.append(item);
+            m_currentReceiverSettings.rec_configurations.append(item);
         }
 
         // prozess ReceivOwnKey
@@ -403,7 +362,7 @@ void connectDialog::on_configurationBox_clicked(bool checked)
             ConfigurationItem item;
             item.first = QCanBusDevice::ReceiveOwnKey;
             item.second = ui->receiveOwnBox_2->currentData();
-            m_currentReceiverSettings.configurations.append(item);
+            m_currentReceiverSettings.rec_configurations.append(item);
         }
 
         // prozess error filter
@@ -415,7 +374,7 @@ void connectDialog::on_configurationBox_clicked(bool checked)
                 ConfigurationItem item;
                 item.first = QCanBusDevice::ErrorFilterKey;
                 item.second = QVariant::fromValue(QCanBusFrame::FrameErrors(dec));
-                m_currentReceiverSettings.configurations.append(item);
+                m_currentReceiverSettings.rec_configurations.append(item);
             }
         }
 
@@ -425,24 +384,31 @@ void connectDialog::on_configurationBox_clicked(bool checked)
         }
 
         const int bitrate = ui->bitrateBox_2->bitRate();
+        qDebug() << "Receiver birate: " << bitrate;
         if (bitrate > 0){
             const ConfigurationItem item(QCanBusDevice::BitRateKey, QVariant(bitrate));
-            m_currentReceiverSettings.configurations.append(item);
+            m_currentReceiverSettings.rec_configurations.append(item);
         }
 
         // process CAN FD setting
         ConfigurationItem fdItem;
         fdItem.first = QCanBusDevice::CanFdKey;
-        fdItem.second = ui->canFdBox_2->currentData();
-        m_currentReceiverSettings.configurations.append(fdItem);
+        fdItem.second = ui->canFdBox_2->currentData().toBool();
+        m_currentReceiverSettings.rec_configurations.append(fdItem);
 
         const int dataBitrate = ui->dataBitrateBox_2->bitRate();
         if (dataBitrate > 0){
             const ConfigurationItem item(QCanBusDevice::DataBitRateKey, QVariant(dataBitrate));
-            m_currentReceiverSettings.configurations.append(item);
+            m_currentReceiverSettings.rec_configurations.append(item);
         }
-
     }
+
+}
+
+void connectDialog::on_configurationBox_clicked(bool checked)
+{
+    m_configBoxEnabled = checked;
+    buttionBoxStatus();
 }
 
 
