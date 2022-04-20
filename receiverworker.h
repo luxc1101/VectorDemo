@@ -16,6 +16,7 @@ public:
 
 signals:
     void ActionConnectable(bool value);
+    void receivedMessage(QString msg);
 
 private slots:
     void processErrorsReceiver(QCanBusDevice::CanBusError) const;

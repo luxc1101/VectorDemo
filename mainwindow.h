@@ -28,6 +28,7 @@ private slots:
     // void connectDevice();
     // void processErrorsSender(QCanBusDevice::CanBusError) const;
     void ActionConnectable(bool value);
+    void receivedMessage(QString msg);
 /*******************************************************************/
     void computationStarted();
     void computationFinished(int value);

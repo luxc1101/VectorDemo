@@ -33,6 +33,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionDisconnect, SIGNAL(triggered()), rec_worker, SLOT(disconnectDevice()));
     connect(rec_worker->m_connectDialog, SIGNAL(accepted()), rec_worker, SLOT(connectDevice()));
     connect(rec_worker, SIGNAL(ActionConnectable(bool)), this, SLOT(ActionConnectable(bool)));
+    connect(rec_worker, SIGNAL(receivedMessage(QString)),this, SLOT(receivedMessage(QString)));
 
     rec_worker->moveToThread(rec_thread);
     rec_thread->start();
@@ -91,6 +92,10 @@ void MainWindow::ActionConnectable(bool value){
         ui->actionConnect->setEnabled(true);
         ui->actionDisconnect->setEnabled(false);
     }
+}
+
+void MainWindow::receivedMessage(QString msg){
+    ui->textEdit_reseiveMsg->append(msg);
 }
 
 /*************************************************************************************/

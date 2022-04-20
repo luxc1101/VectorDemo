@@ -31,8 +31,8 @@ void ReceiverWorker::connectDevice(){
         m_statusReceiver->setText(tr("Error creating device %1, reason: %2").arg(RecConfig.pluginName).arg(errorString));
         return;
     }
-
     connect(m_canDeviceReceiver, &QCanBusDevice::errorOccurred, this, &ReceiverWorker::processErrorsReceiver);
+    connect(m_canDeviceReceiver, &QCanBusDevice::framesReceived, this, &ReceiverWorker::processReceivedFrames);
 
     if (RecConfig.ReceiverBoxEnabled){
         for (const connectDialog::ConfigurationItem &item : RecConfig.rec_configurations)
@@ -86,8 +86,49 @@ void ReceiverWorker::disconnectDevice(){
     m_statusReceiver->setText(tr("Disconnected"));
 }
 
+static QString frameFlags(const QCanBusFrame &frame){
+    QString result = QLatin1String(" ");
 
+    if(frame.hasBitrateSwitch())
+        result[1] = QLatin1Char('B');
+    if(frame.hasErrorStateIndicator())
+        result[2] = QLatin1Char('E');
+    if(frame.hasLocalEcho())
+        result[3] = QLatin1Char('L');
 
+    return result;
+}
+
+void ReceiverWorker::processReceivedFrames(){
+    if(!m_canDeviceReceiver)
+        return;
+    const connectDialog::ReceiverSettings RecConfig = m_connectDialog->receiversettings();
+    while (m_canDeviceReceiver->framesAvailable()) {
+        const QCanBusFrame frame = m_canDeviceReceiver->readFrame();
+
+        QString view;
+        if (frame.frameType() == QCanBusFrame::ErrorFrame){
+            view = m_canDeviceReceiver->interpretErrorFrame(frame);
+        }else {
+            view = frame.toString();
+        }
+        const QString time = QString::fromLatin1("%1.%2  ")
+                .arg(frame.timeStamp().seconds(), 5, 10, QLatin1Char(' '))
+                .arg(frame.timeStamp().microSeconds() / 100, 4, 10, QLatin1Char('0'));
+        const QString flags = frameFlags(frame);
+        QString message = tr("TimeStamps: %1 Channel: %2 ID: 0x%3")
+                .arg(time)
+                .arg(RecConfig.deviceInterfaceName.back(),2, QLatin1Char(' '))
+                .arg(QString::number(frame.frameId(), 16 ));
+                // .arg(frame.frameId(),8,16,QLatin1Char( '0' ));
+                // "TimeStamp:" + time + flags + view;
+
+        qDebug() << message;
+        // qDebug() << frame.;
+        emit receivedMessage(message);
+
+    }
+}
 
 
 
