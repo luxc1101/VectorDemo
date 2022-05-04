@@ -71,6 +71,9 @@ void ReceiverWorker::connectDevice(){
                                       .arg(RecConfig.pluginName).arg(RecConfig.deviceInterfaceName));
         }
 
+        if (m_canDeviceReceiver->hasBusStatus())
+            qDebug() << "reveiver has bus status?" << m_canDeviceReceiver->hasBusStatus();
+
     }
 
 }

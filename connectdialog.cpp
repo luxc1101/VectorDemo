@@ -34,12 +34,11 @@ connectDialog::connectDialog(QWidget *parent) :
     ui->tabWidget_configBox->setTabEnabled(1, false);
 
     on_SenderBox_clicked(m_currentSenderSettings.SenderBoxEnabled);
-    // connect(ui->SenderBox, &QGroupBox::clicked, this, &connectDialog::on_SenderBox_clicked);
-    // connect(ui->pluginListBox, &QComboBox::currentTextChanged,this, &connectDialog::on_pluginListBox_currentTextChanged);
-    // connect(ui->interfaceListBox, &QComboBox::currentTextChanged, this, &connectDialog::on_interfaceListBox_currentTextChanged);
+
+    ui->dataBitrateBox->setFlexibleDataRateEnabled(true);
+    ui->dataBitrateBox_2->setFlexibleDataRateEnabled(true);
 
     on_ReceiverBox_clicked(m_currentReceiverSettings.ReceiverBoxEnabled);
-
 }
 
 connectDialog::~connectDialog()
@@ -183,7 +182,7 @@ void connectDialog::on_ReceiverBox_clicked(bool checked)
 void connectDialog::on_buttonBox_accepted()
 {
     updateSettings();
-    accept();
+    // accept();
 
 }
 
