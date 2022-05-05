@@ -39,10 +39,21 @@
           </attribute>
           <layout class="QVBoxLayout" name="verticalLayout_3">
            <item>
-            <widget class="QTextEdit" name="textEdit_reseiveMsg"/>
+            <widget class="QTextEdit" name="textEdit_reseiveMsg">
+             <property name="font">
+              <font>
+               <family>Courier</family>
+              </font>
+             </property>
+            </widget>
            </item>
            <item>
             <widget class="QLabel" name="receiverCanBusStatusLabel">
+             <property name="font">
+              <font>
+               <pointsize>7</pointsize>
+              </font>
+             </property>
              <property name="text">
               <string/>
              </property>

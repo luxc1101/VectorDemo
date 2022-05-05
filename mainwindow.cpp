@@ -21,19 +21,23 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // Receiver
-    rec_thread = new QThread();
+    QTimer::singleShot(50, rec_worker->m_connectDialog, &connectDialog::show);
+
     rec_worker = new ReceiverWorker();
     rec_worker->m_connectDialog = new connectDialog;
+    rec_thread = new QThread();
     rec_worker->m_statusReceiver = new QLabel;
+    m_busStatusTimer = new QTimer;
+    m_busStatusTimer->start(2000);
 
-    QTimer::singleShot(50, rec_worker->m_connectDialog, &connectDialog::show);
+    connect(m_busStatusTimer, SIGNAL(timeout()), rec_worker, SLOT(busStatus()));
 
     connect(ui->actionConnect, SIGNAL(triggered()), rec_worker->m_connectDialog, SLOT(show()));
     connect(ui->actionDisconnect, SIGNAL(triggered()), rec_worker, SLOT(disconnectDevice()));
     connect(rec_worker->m_connectDialog, SIGNAL(accepted()), rec_worker, SLOT(connectDevice()));
     connect(rec_worker, SIGNAL(ActionConnectable(bool)), this, SLOT(ActionConnectable(bool)));
     connect(rec_worker, SIGNAL(receivedMessage(QString)),this, SLOT(receivedMessage(QString)));
+    connect(rec_worker, SIGNAL(busStatusString(QString)),this, SLOT(busStatusString(QString)));
 
     rec_worker->moveToThread(rec_thread);
     rec_thread->start();
@@ -98,6 +102,9 @@ void MainWindow::receivedMessage(QString msg){
     ui->textEdit_reseiveMsg->append(msg);
 }
 
+void MainWindow::busStatusString(QString msg){
+    ui->receiverCanBusStatusLabel->setText(msg);
+}
 /*************************************************************************************/
 void MainWindow::on_computeButtion_clicked()
 {

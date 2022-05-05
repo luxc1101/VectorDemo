@@ -110,11 +110,17 @@ public:
         verticalLayout_3->setObjectName(QString::fromUtf8("verticalLayout_3"));
         textEdit_reseiveMsg = new QTextEdit(tab_receiver);
         textEdit_reseiveMsg->setObjectName(QString::fromUtf8("textEdit_reseiveMsg"));
+        QFont font;
+        font.setFamily(QString::fromUtf8("Courier"));
+        textEdit_reseiveMsg->setFont(font);
 
         verticalLayout_3->addWidget(textEdit_reseiveMsg);
 
         receiverCanBusStatusLabel = new QLabel(tab_receiver);
         receiverCanBusStatusLabel->setObjectName(QString::fromUtf8("receiverCanBusStatusLabel"));
+        QFont font1;
+        font1.setPointSize(7);
+        receiverCanBusStatusLabel->setFont(font1);
 
         verticalLayout_3->addWidget(receiverCanBusStatusLabel);
 

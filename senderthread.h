@@ -3,10 +3,10 @@
 #include <QThread>
 #include <QDebug>
 
-class SenderThread : public QThread
+class senderThread : public QThread
 {
 public:
-    explicit SenderThread(QObject *parent = nullptr);
+    explicit senderThread(QObject *parent = nullptr);
 
     void run();
 };

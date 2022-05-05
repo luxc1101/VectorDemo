@@ -31,7 +31,7 @@ SOURCES += \
         main.cpp \
         mainwindow.cpp \
         receiverworker.cpp \
-        senderthread.cpp \
+        senderworker.cpp \
         worker.cpp
 
 HEADERS += \
@@ -40,7 +40,7 @@ HEADERS += \
         connectdialog.h \
         mainwindow.h \
         receiverworker.h \
-        senderthread.h \
+        senderworker.h \
         worker.h
 
 FORMS += \

@@ -5,6 +5,7 @@
 #include <QCanBusDevice> // for CanBusError
 #include <QCanBus>
 #include <QLabel>
+#include <QTimer>
 
 class connectDialog;
 
@@ -17,17 +18,21 @@ public:
 signals:
     void ActionConnectable(bool value);
     void receivedMessage(QString msg);
+    void busStatusString(QString msg);
 
 private slots:
     void processErrorsReceiver(QCanBusDevice::CanBusError) const;
     void disconnectDevice();
     void connectDevice();
     void processReceivedFrames();
+    void busStatus();
 
 public:
     QCanBusDevice *m_canDeviceReceiver =  nullptr;
     QLabel *m_statusReceiver = nullptr;
     connectDialog *m_connectDialog = nullptr;
+    // QTimer *m_busStatusTimer = nullptr;
+
 
 private:
 

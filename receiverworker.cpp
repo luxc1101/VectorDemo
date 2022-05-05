@@ -33,6 +33,7 @@ void ReceiverWorker::connectDevice(){
     }
     connect(m_canDeviceReceiver, &QCanBusDevice::errorOccurred, this, &ReceiverWorker::processErrorsReceiver);
     connect(m_canDeviceReceiver, &QCanBusDevice::framesReceived, this, &ReceiverWorker::processReceivedFrames);
+    // connect(m_canDeviceReceiver, &QCanBusDevice::framesReceived, this, &ReceiverWorker::busStatus);
 
     if (RecConfig.ReceiverBoxEnabled){
         for (const connectDialog::ConfigurationItem &item : RecConfig.rec_configurations)
@@ -71,9 +72,38 @@ void ReceiverWorker::connectDevice(){
                                       .arg(RecConfig.pluginName).arg(RecConfig.deviceInterfaceName));
         }
 
-        if (m_canDeviceReceiver->hasBusStatus())
-            qDebug() << "reveiver has bus status?" << m_canDeviceReceiver->hasBusStatus();
+        if (m_canDeviceReceiver->hasBusStatus()){
+            // m_busStatusTimer->start(2000);
+            qDebug() << m_canDeviceReceiver->busStatus();
+        }else{
+            qDebug() << "No CAN bus status available.";
+        }
+    }
 
+}
+
+void ReceiverWorker::busStatus()
+{
+    if (!m_canDeviceReceiver || !m_canDeviceReceiver->hasBusStatus()){
+        emit busStatusString(tr("No CAN bus status available."));
+        return;
+    }
+
+    // qDebug() << "receiverworker fun bus status";
+
+    switch (m_canDeviceReceiver->busStatus()) {
+    case QCanBusDevice::CanBusStatus::Good:
+        emit busStatusString(tr("CAN bus status: Good."));
+    case QCanBusDevice::CanBusStatus::Warning:
+        emit busStatusString(tr("CAN bus status: Warning."));
+    case QCanBusDevice::CanBusStatus::Error:
+        emit busStatusString(tr("CAN bus status: Error."));
+    case QCanBusDevice::CanBusStatus::BusOff:
+        emit busStatusString(tr("CAN bus status: Bus Off."));
+        break;
+    default:
+        emit busStatusString(tr("CAN bus status: Unknown."));
+        break;
     }
 
 }
@@ -119,10 +149,10 @@ void ReceiverWorker::processReceivedFrames(){
                 .arg(frame.timeStamp().seconds(), 5, 10, QLatin1Char(' '))
                 .arg(frame.timeStamp().microSeconds() / 100, 4, 10, QLatin1Char('0'));
         const QString flags = frameFlags(frame);
-        QString message = tr("TimeStamps: %1 Channel: %2 ID: 0x%3")
+        QString message = tr("TimeStamps: %1 Channel: %2 ID: %3")
                 .arg(time)
                 .arg(RecConfig.deviceInterfaceName.back(),2, QLatin1Char(' '))
-                .arg(QString::number(frame.frameId(), 16 ));
+                .arg(view,0);
                 // .arg(frame.frameId(),8,16,QLatin1Char( '0' ));
                 // "TimeStamp:" + time + flags + view;
 

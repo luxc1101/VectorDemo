@@ -234,6 +234,7 @@ Makefile: VectorCANDemo.pro ..\..\Qt5\5.15.0\msvc2019_64\mkspecs\win32-msvc\qmak
 		..\..\Qt5\5.15.0\msvc2019_64\mkspecs\features\qt_config.prf \
 		..\..\Qt5\5.15.0\msvc2019_64\mkspecs\win32-msvc\qmake.conf \
 		..\..\Qt5\5.15.0\msvc2019_64\mkspecs\features\spec_post.prf \
+		.qmake.stash \
 		..\..\Qt5\5.15.0\msvc2019_64\mkspecs\features\exclusive_builds.prf \
 		..\..\Qt5\5.15.0\msvc2019_64\mkspecs\common\msvc-version.conf \
 		..\..\Qt5\5.15.0\msvc2019_64\mkspecs\features\toolchain.prf \
@@ -263,7 +264,6 @@ Makefile: VectorCANDemo.pro ..\..\Qt5\5.15.0\msvc2019_64\mkspecs\win32-msvc\qmak
 		..\..\Qt5\5.15.0\msvc2019_64\lib\Qt5SerialBus.prl \
 		..\..\Qt5\5.15.0\msvc2019_64\lib\Qt5Core.prl \
 		..\..\Qt5\5.15.0\msvc2019_64\lib\qtmain.prl \
-		.qmake.stash \
 		..\..\Qt5\5.15.0\msvc2019_64\mkspecs\features\build_pass.prf \
 		vectorcan.qrc \
 		..\..\Qt5\5.15.0\msvc2019_64\lib\Qt5Widgetsd.prl \
@@ -422,6 +422,7 @@ Makefile: VectorCANDemo.pro ..\..\Qt5\5.15.0\msvc2019_64\mkspecs\win32-msvc\qmak
 ..\..\Qt5\5.15.0\msvc2019_64\mkspecs\features\qt_config.prf:
 ..\..\Qt5\5.15.0\msvc2019_64\mkspecs\win32-msvc\qmake.conf:
 ..\..\Qt5\5.15.0\msvc2019_64\mkspecs\features\spec_post.prf:
+.qmake.stash:
 ..\..\Qt5\5.15.0\msvc2019_64\mkspecs\features\exclusive_builds.prf:
 ..\..\Qt5\5.15.0\msvc2019_64\mkspecs\common\msvc-version.conf:
 ..\..\Qt5\5.15.0\msvc2019_64\mkspecs\features\toolchain.prf:
@@ -451,7 +452,6 @@ VectorCANDemo.pro:
 ..\..\Qt5\5.15.0\msvc2019_64\lib\Qt5SerialBus.prl:
 ..\..\Qt5\5.15.0\msvc2019_64\lib\Qt5Core.prl:
 ..\..\Qt5\5.15.0\msvc2019_64\lib\qtmain.prl:
-.qmake.stash:
 ..\..\Qt5\5.15.0\msvc2019_64\mkspecs\features\build_pass.prf:
 vectorcan.qrc:
 ..\..\Qt5\5.15.0\msvc2019_64\lib\Qt5Widgetsd.prl:

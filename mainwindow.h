@@ -29,6 +29,7 @@ private slots:
     // void processErrorsSender(QCanBusDevice::CanBusError) const;
     void ActionConnectable(bool value);
     void receivedMessage(QString msg);
+    void busStatusString(QString msg);
 /*******************************************************************/
     void computationStarted();
     void computationFinished(int value);
@@ -39,6 +40,7 @@ private:
     Ui::MainWindow *ui = nullptr;
     QThread* rec_thread;
     ReceiverWorker* rec_worker;
+    QTimer* m_busStatusTimer;
     // connectDialog *m_connectDialog = nullptr;
     // void initActionsConnections();
     // QCanBusDevice *m_canDeviceSender =  nullptr;
