@@ -24,6 +24,10 @@ public:
     explicit MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
+signals:
+    void SendFrameSetup(); // send the CfgInfo of canframe box to sender
+
+
 private slots:
     // void connectDevice();
     // void processErrorsSender(QCanBusDevice::CanBusError) const;
